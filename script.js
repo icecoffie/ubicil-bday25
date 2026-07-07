@@ -551,7 +551,7 @@ scene.add(tableMesh);
 function createCake() {
     const cakeGroup = new THREE.Group();
     
-    const strawberryTexture = new THREE.TextureLoader().load('/public/redstrawberry.png');
+    const strawberryTexture = new THREE.TextureLoader().load('/redstrawberry.png');
     strawberryTexture.colorSpace = THREE.SRGBColorSpace;
 
     const strawberryMaterial = new THREE.SpriteMaterial({ 
@@ -969,5 +969,4 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
- Initialize
-console.log('Birthday cake with cream and strawberry decoration initialized');
+ console.log('Birthday cake with cream and strawberry decoration initialized');
