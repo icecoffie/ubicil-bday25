@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HBD UBICIL</title>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon" />
+    <link href="style.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+
+    <div id="name-input-screen" class="show">
+      <div class="input-container">
+        <h2>
+          <i class="fas fa-birthday-cake"></i> Happy Birthday Ubicil!</i>
+        </h2>
+        <p class="main-instruction">
+          Selamat ulang tahun yang ke-25!
+        </p>
+        <p class="birthday-date">
+          8 Juli 2001 - 8 Juli 2026
+        </p>
+        <button id="start-celebration-btn">
+          <i class="fas fa-sparkles"></i> Ayo Pencet!
+          <i class="fas fa-party-horn"></i>
+        </button>
+        <p class="tip">
+          <i class="fas fa-heart"></i> Mekarlah dimanapun tumbuhnya.
+        </p>
+      </div>
+    </div>
+
+    <div id="volume-reminder">
+      <h2>Pencet Sekali Lagi ya.. <i class="fas fa-confetti"></i></h2>
+      <p class="main-instruction">
+        <i class="fas fa-music"></i> Naikkin volume dan klik untuk memulai
+        lagu ulang tahun!
+      </p>
+      <p class="sub-instruction">
+        <i class="fas fa-candle-holder"></i> Setelah lagu, tiup lilinnya dan make a wish yaa
+      </p>
+      <p class="tip">
+        klik di mana aja<br />liat ada kue tobeli
+        dan lagunya
+      </p>
+    </div>
+
+    <audio id="happy-birthday-audio">
+      <source src="/happy-birthday.mp3" type="audio/mpeg" />
+    </audio>
+
+    <div id="hold-reminder">
+      <h2>
+        <i class="fas fa-wand-magic-sparkles"></i> Make a wish ya...
+        <i class="fas fa-wand-magic-sparkles"></i>
+      </h2>
+      <p class="main-instruction">
+        <i class="fas fa-fire-flame-curved"></i> Sekarang saatnya meniup lilin!
+      </p>
+      <p class="sub-instruction">
+        <i class="fas fa-seedling"></i> Untuk doa yang memiliki nyawa, semoga di aamiin kan oleh semesta.
+      </p>
+    </div>
+
+    <div class="song-countdown" id="song-countdown">
+      <div class="countdown-number" id="countdown-number">38</div>
+      <div class="countdown-label" id="countdown-label">
+        <span>Waktu Lagu</span>
+        <small>detik tersisa</small>
+      </div>
+    </div>
+
+    <div id="congratulation-overlay">
+      <div id="congratulation-text">
+        <h3>
+          <i class="fas fa-gift"></i> Selamat Ulang Tahun!
+          <i class="fas fa-gift"></i>
+        </h3>
+        <h4 id="personalized-name"></h4>
+      </div>
+    </div>
+
+    <div id="birthday-message-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Untuk Fida ✨🪽</h3>
+        </div>
+        <div class="modal-body">
+          <p>Di antara waktu yang terus berjalan tanpa pernah menunggu, hari ini datang membawa satu pengingat bahwa pernah ada seseorang yang lahir, lalu tumbuh menjadi versi dirinya yang sekarang.</p>
+          
+          <p>Semoga di usia yang baru ini, langkahmu semakin tenang, hatimu semakin lapang, fisikmu yang pulih, dan segala hal yang kamu perjuangkan perlahan menemukan jalannya. Yang baik mendekat tanpa harus terlalu dikejar, dan yang terasa berat pelan-pelan menemukan cara untuk diringankan.</p>
+          
+          <p>Ada banyak hal yang mungkin sudah berubah, terlalu panjang jarak yang mungkin sudah terbentang. Tapi doa-doa baik tidak pernah benar-benar punya batas. Semoga kamu selalu dikelilingi orang-orang yang tulus, dikuatkan dalam setiap proses, dan dipertemukan dengan hal-hal yang membuatmu merasa cukup.</p>
+          
+          <div class="signature">
+            <p>— Malika Shakila</p>
+          </div>
+        </div>
+        <button id="close-message-btn" class="close-btn">
+          <i class="fas fa-heart"></i> Good It.
+        </button>
+      </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script>
+      let userName = "";
+
+      const nameInputScreen = document.getElementById('name-input-screen');
+      const startCelebrationBtn = document.getElementById('start-celebration-btn');
+      const volumeReminder = document.getElementById('volume-reminder');
+      const audio = document.getElementById('happy-birthday-audio');
+      const personalizedNameElement = document.getElementById('personalized-name');
+
+      const songCountdown = document.getElementById('song-countdown');
+      const countdownNumber = document.getElementById('countdown-number');
+      const countdownLabel = document.getElementById('countdown-label'); 
+      let songCountdownValue = 38;
+      let songCountdownInterval;
+
+      function startSongCountdown() {
+          songCountdownValue = 38;
+          countdownNumber.textContent = songCountdownValue;
+          countdownLabel.innerHTML = `<span>Waktu Lagu</span><small>detik tersisa</small>`;
+          songCountdown.style.display = 'flex';
+
+          songCountdownInterval = setInterval(() => {
+              songCountdownValue--;
+              countdownNumber.textContent = songCountdownValue;
+
+              if (songCountdownValue <= 0) {
+                  clearInterval(songCountdownInterval);
+                  countdownNumber.textContent = '★';
+                  countdownLabel.innerHTML = `
+                      <span style="font-size: 1.1em; font-weight: bold;">Tunggu...</span>
+                      <small>bersiap-siap</small>
+                  `;
+              }
+          }, 1000);
+      }
+
+      startCelebrationBtn.addEventListener("click", function () {
+          userName = "Ubicil"; 
+
+          localStorage.setItem('birthdayUserName', userName);
+
+          if (personalizedNameElement) {
+              personalizedNameElement.innerHTML = `<i class="fas fa-birthday-cake"></i> ${userName}! <i class="fas fa-balloon"></i>`;
+          }
+
+          nameInputScreen.classList.remove('show');
+          setTimeout(function () {
+              nameInputScreen.style.display = 'none';
+          }, 1000);
+
+          volumeReminder.style.display = 'flex';
+          setTimeout(function () {
+              volumeReminder.classList.add('show');
+          }, 50);
+      });
+
+      window.addEventListener('load', function () {
+          userName = "UBICIL"; 
+          localStorage.setItem('birthdayUserName', userName);
+          if (personalizedNameElement) {
+              personalizedNameElement.innerHTML = `<i class="fas fa-birthday-cake"></i> ${userName}! <i class="fas fa-balloon"></i>`;
+          }
+      });
+
+      volumeReminder.addEventListener("click", function () {
+          audio.play();
+          
+          if (typeof ambientLight !== 'undefined') {
+              ambientLight.intensity = 0.25;
+          }
+          if (typeof cakeLight !== 'undefined') {
+              cakeLight.intensity = 1.2;
+          }
+          if (typeof backLight !== 'undefined') {
+              backLight.intensity = 0.8;
+          }
+          
+          volumeReminder.classList.remove('show');
+          setTimeout(function () {
+              volumeReminder.style.display = 'none';
+          }, 1000);
+
+          startSongCountdown();
+
+          startConfetti();
+      });
+
+      window.addEventListener('beforeunload', function() {
+          if (songCountdownInterval) clearInterval(songCountdownInterval);
+      });
+
+      const holdReminder = document.getElementById('hold-reminder');
+      const observer = new MutationObserver(() => {
+          if (holdReminder.style.display === 'flex' || holdReminder.style.display === 'block' ||
+              window.getComputedStyle(holdReminder).display !== 'none') {
+
+              songCountdown.style.display = 'flex'; 
+              countdownNumber.textContent = '🎤';
+              countdownLabel.innerHTML = `
+                  <span style="font-size: 1.3em; font-weight: bold; letter-spacing: 1px;">Tiup!</span>
+                  <small>ke mikrofon</small>
+              `;
+          }
+      });
+
+      observer.observe(holdReminder, {
+          attributes: true,
+          attributeFilter: ['style', 'class']
+      });
+
+      if (window.getComputedStyle(holdReminder).display !== 'none') {
+          countdownNumber.textContent = '🎤';
+          countdownLabel.innerHTML = `<span style="font-size: 1.3em; font-weight: bold;">Tiup!</span><small>ke mikrofon</small>`;
+          songCountdown.style.display = 'flex';
+      }
+      const confettiCanvas = document.getElementById('confetti-canvas');
+      const ctx = confettiCanvas.getContext('2d');
+      let confettiParticles = [];
+      let confettiAnimation;
+
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+          confettiCanvas.width = window.innerWidth;
+          confettiCanvas.height = window.innerHeight;
+      });
+
+      function randomColor() {
+          const colors = ['#1e40af', '#3b82f6', '#60a5fa', '#2563eb', '#1d4ed8', '#1e3a8a', '#3730a3', '#1e1b4b'];
+          return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      function createConfetti() {
+          return {
+              x: Math.random() * confettiCanvas.width,
+              y: -10,
+              size: Math.random() * 8 + 5,
+              speedY: Math.random() * 3 + 2,
+              speedX: Math.random() * 3 - 1.5,
+              rotation: Math.random() * 360,
+              rotationSpeed: Math.random() * 10 - 5,
+              color: randomColor(),
+              opacity: 1
+          };
+      }
+
+      function startConfetti() {
+          cancelAnimationFrame(confettiAnimation);
+          confettiParticles = [];
+
+          function animate() {
+              ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+              if (Math.random() > 0.3) {
+                  confettiParticles.push(createConfetti());
+              }
+
+              confettiParticles.forEach((p, i) => {
+                  p.y += p.speedY;
+                  p.x += p.speedX;
+                  p.rotation += p.rotationSpeed;
+                  p.opacity = 1 - (p.y / confettiCanvas.height);
+
+                  if (p.y > confettiCanvas.height || p.opacity <= 0) {
+                      confettiParticles.splice(i, 1);
+                  }
+
+                  ctx.save();
+                  ctx.globalAlpha = p.opacity;
+                  ctx.translate(p.x, p.y);
+                  ctx.rotate(p.rotation * Math.PI / 180);
+                  ctx.fillStyle = p.color;
+                  ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.5);
+                  ctx.restore();
+              });
+
+              if (confettiParticles.length > 0 || audio.currentTime < audio.duration - 1) {
+                  confettiAnimation = requestAnimationFrame(animate);
+              }
+          }
+
+          animate();
+
+          audio.addEventListener('ended', () => {
+              setTimeout(() => {
+                  confettiParticles = [];
+                  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+              }, 2000);
+          });
+      }
+
+      const birthdayMessageModal = document.getElementById('birthday-message-modal');
+      const closeMessageBtn = document.getElementById('close-message-btn');
+
+      function showBirthdayMessage() {
+          setTimeout(() => {
+              birthdayMessageModal.style.display = 'flex';
+              setTimeout(() => {
+                  birthdayMessageModal.classList.add('show');
+              }, 100);
+          }, 500); 
+      }
+
+      window.showBirthdayMessage = showBirthdayMessage;
+
+      closeMessageBtn.addEventListener('click', function() {
+          birthdayMessageModal.classList.remove('show');
+          setTimeout(() => {
+              birthdayMessageModal.style.display = 'none';
+          }, 500);
+      });
+
+      birthdayMessageModal.addEventListener('click', function(e) {
+          if (e.target === birthdayMessageModal) {
+              closeMessageBtn.click();
+          }
+      });
+    </script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
